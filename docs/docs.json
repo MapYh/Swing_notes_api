@@ -1,0 +1,92 @@
+{
+  "info": {
+    "description": "Documentation for swing notes Api.",
+    "title": "Swing API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.0",
+  "components": {
+    "schemas": {
+      "notes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "modifiedAt": {
+            "type": "string"
+          }
+        }
+      },
+      "message": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "api/notes": {
+      "get": {
+        "description": null,
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "notes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/notes"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Returnerar alla notes"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "notes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/message"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Returnerar ett error meddelande från servern."
+          }
+        },
+        "summary": "Returnerar alla notes i databasen"
+      }
+    }
+  }
+}
