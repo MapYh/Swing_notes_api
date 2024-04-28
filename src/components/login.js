@@ -18,7 +18,7 @@ async function login(req, res, next) {
     if (!correctPassword) {
       console.log(user._id);
       const token = await jwt.sign({ id: user._id }, process.env.JWS_SECRET, {
-        expiresIn: 600,
+        expiresIn: 60000,
       });
       req.token = token;
       next();

@@ -85,6 +85,75 @@
             "description": "Returnerar ett error meddelande från servern."
           }
         },
+        "summary": "Returnerar alla notes i databasen."
+      },
+      "post": {
+        "description": null,
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/message"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Skickar en anteckning till servern."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "notes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/message"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Returnerar ett error meddelande från servern."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "notes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/message"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Returnerar ett error meddelande från servern."
+          }
+        },
         "summary": "Returnerar alla notes i databasen"
       }
     }
