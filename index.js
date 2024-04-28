@@ -29,9 +29,9 @@ app.post("/api/users/login", login, async (req, res) => {
   console.log("test", req.body);
   console.log("token", req.token);
   try {
-    res.status(200).json({ message: "You are logged in." });
+    res.status(200).json({ success: true, message: "You are logged in." });
   } catch (error) {
-    res.status(500).json({ message: "Server error." });
+    res.status(500).json({ success: false, message: "Server error." });
   }
 });
 
@@ -47,10 +47,12 @@ app.post("/api/notes", [tokenChecker, bodyChecker], async (req, res) => {
         { _id: req.resultFromToken.id },
         { $set: { notes: user.notes } }
       );
-      res.status(200).json({ message: `Note saved to your account.` });
+      res
+        .status(200)
+        .json({ success: true, message: `Note saved to your account.` });
     }
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
@@ -60,10 +62,10 @@ app.get("/api/notes", tokenChecker, async (req, res) => {
   try {
     if (req.resultFromToken) {
       const allNotes = await getAllNotes(req.resultFromToken.id);
-      res.status(200).json({ notes: allNotes });
+      res.status(200).json({ success: true, notes: allNotes });
     }
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
@@ -73,13 +75,16 @@ app.get("/api/notes/search", tokenChecker, async (req, res) => {
     if (req.resultFromToken) {
       const note = await search(req.resultFromToken.id, title);
       if (note) {
-        res.status(200).json({ notes: note });
+        res.status(200).json({ success: true, notes: note });
       } else {
-        res.status(404).json({ message: `No note found with title:${title}` });
+        res.status(404).json({
+          success: false,
+          message: `No note found with title:${title}`,
+        });
       }
     }
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
@@ -95,10 +100,10 @@ app.put("/api/notes", tokenChecker, async (req, res) => {
         updatedInfo
       );
 
-      res.status(200).json({ message: "notes updated" });
+      res.status(200).json({ success: true, message: "notes updated" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
@@ -109,12 +114,12 @@ app.delete("/api/notes", tokenChecker, async (req, res) => {
   try {
     if (req.resultFromToken) {
       await deleteNote(req.resultFromToken.id, idToDelete);
-      res.status(200).json({ message: "note deleted" });
+      res.status(200).json({ success: true, message: "note deleted" });
     } else {
-      res.status(404).json({ message: "token not found" });
+      res.status(404).json({ success: false, message: "token not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
