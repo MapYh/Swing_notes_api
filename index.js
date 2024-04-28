@@ -9,6 +9,8 @@ const {
   getUserWithId,
   dbUsers,
   updateNotes,
+  deleteNote,
+  search,
 } = require("./src/services/database.js");
 const { bodyChecker } = require("./src/utils/bodychecker.js");
 const swaggerUI = require("swagger-ui-express");
@@ -65,6 +67,22 @@ app.get("/api/notes", tokenChecker, async (req, res) => {
   }
 });
 
+app.get("/api/notes/search", tokenChecker, async (req, res) => {
+  const { title } = req.body;
+  try {
+    if (req.resultFromToken) {
+      const note = await search(req.resultFromToken.id, title);
+      if (note) {
+        res.status(200).json({ notes: note });
+      } else {
+        res.status(404).json({ message: `No note found with title:${title}` });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 /*-----------PUTS---------------*/
 
 app.put("/api/notes", tokenChecker, async (req, res) => {
@@ -78,6 +96,22 @@ app.put("/api/notes", tokenChecker, async (req, res) => {
       );
 
       res.status(200).json({ message: "notes updated" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+/*-----------DELETE---------------*/
+
+app.delete("/api/notes", tokenChecker, async (req, res) => {
+  const idToDelete = req.body;
+  try {
+    if (req.resultFromToken) {
+      await deleteNote(req.resultFromToken.id, idToDelete);
+      res.status(200).json({ message: "note deleted" });
+    } else {
+      res.status(404).json({ message: "token not found" });
     }
   } catch (error) {
     res.status(500).json({ message: "Server error" });

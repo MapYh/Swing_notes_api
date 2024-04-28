@@ -33,7 +33,7 @@ async function updateNotes(id, updatedInfo) {
       return docs;
     }
   });
-  console.log("inside db", user);
+
   //Letar efter en anteckning med samma id som in req.
   for (let i = 0; i < user.notes.length; i++) {
     if (user.notes[i].id == updatedInfo.id) {
@@ -45,9 +45,46 @@ async function updateNotes(id, updatedInfo) {
   }
   const notes = user.notes;
   await dbUsers.update({ _id: id }, { $set: { notes } });
-  console.log("user", user);
+
   //Returnerar alla anteckningar
   return notes;
+}
+
+async function deleteNote(id, idToDelete) {
+  const user = await dbUsers.findOne({ _id: id }, (err, docs) => {
+    if (err) {
+      console.log(err);
+    } else {
+      return docs;
+    }
+  });
+
+  for (let i = 0; i < user.notes.length; i++) {
+    if (user.notes[i].id == idToDelete.id) {
+      user.notes.splice(i, 1);
+    }
+  }
+  const notes = user.notes;
+  await dbUsers.update({ _id: id }, { $set: { notes } });
+}
+
+async function search(id, title) {
+  let searchedNote;
+  const user = await dbUsers.findOne({ _id: id }, (err, docs) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("docs", docs);
+      return docs;
+    }
+  });
+
+  for (let i = 0; i < user.notes.length; i++) {
+    if (user.notes[i].title == title) {
+      searchedNote = user.notes[i];
+    }
+  }
+  return searchedNote;
 }
 
 module.exports = {
@@ -57,4 +94,6 @@ module.exports = {
   getUserWithId,
   getAllNotes,
   updateNotes,
+  deleteNote,
+  search,
 };
