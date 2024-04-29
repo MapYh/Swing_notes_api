@@ -12,7 +12,7 @@ async function tokenChecker(req, res, next) {
     //Läger till resultatet från verify ovan till anropet.
     req.resultFromToken = resultFromToken;
   } catch (error) {
-    res.status(500).json({ message: "Expired token" });
+    res.status(500).json({ message: "Hittade ingen giltig token." });
   }
   next();
 }

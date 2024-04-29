@@ -11,7 +11,7 @@ async function signup(req, res, next) {
     (key) => !["username", "password", "notes"].includes(key)
   );
   if (validateBody.length > 0) {
-    return res.status(400).json({ message: "body contained wrong values" });
+    return res.status(400).json({ message: "Anropet innhåller fel nycklar." });
   }
   //Kolla om det finns en användare redan finns med det sökta användarnamnet.
   const user = await getUser(username);
@@ -25,13 +25,15 @@ async function signup(req, res, next) {
       const result = await storedUser(username, encyptedPassword, notes);
       //Om result innehåller något har en användare sparats.
       if (result) {
-        res.status(200).json({ success: true, message: "User created." });
+        res.status(200).json({ success: true, message: "Användare sparad." });
         next();
       }
       //400 returneras från bodychecker.js om någonting gick fel i anropet.
     } else {
       //404 om det inte gick att skapa en användare.
-      res.status(404).json({ success: false, message: "user not created." });
+      res
+        .status(404)
+        .json({ success: false, message: "Användaren sparades inte." });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error." });

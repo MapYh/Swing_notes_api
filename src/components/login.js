@@ -8,7 +8,9 @@ async function login(req, res, next) {
   const user = await getUser(username);
   let userPassword;
   if (user == null) {
-    res.status(404).json({ success: false, message: "User not found." });
+    res
+      .status(404)
+      .json({ success: false, message: "Användaren hittades inte." });
     return;
   } else {
     userPassword = user.password;

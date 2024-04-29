@@ -21,7 +21,7 @@ async function bodyChecker(req, res, next) {
   if (!validateBodyValues.length == 5) {
     return res
       .status(400)
-      .json({ message: "The body contained the wrong type of values" });
+      .json({ message: "Anropet innehåller fel typ av värden." });
   }
 
   //Kontrollerar att title och text fältens värden har korrekt längd.
