@@ -24,7 +24,7 @@ app.use("/api/docs", swaggerUI.serve);
 app.get("/api/docs", swaggerUI.setup(apiDocs));
 
 /*
-All info skickas i "body" från postman i formatet,
+All info skickas i body från postman i formatet,
 {
     "id": "3577e7b1-a293-46da-a345-8ef2974aa423",
     "title": "To do",
@@ -41,7 +41,9 @@ var uuid = require('uuid');
 postman.setEnvironmentVariable('guid', uuid.v4());
 
 Token kan hittas i konsolen efter att man skapat en användare och loggat in.
-Token koden finns i rad 51.
+Token koden finns i "/api/users/login".
+
+Anteckningar sökes efter med eget id som skickas med i ett postman request.
 */
 
 /*-----------POST---------------*/
