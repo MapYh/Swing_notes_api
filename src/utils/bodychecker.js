@@ -1,6 +1,6 @@
 async function bodyChecker(req, res, next) {
   const requestBody = req.body;
-  //Validering. Kollar om några extra keys förutom dom bestämda smyger med
+  //Validering. Kollar om några extra keys förutom dom bestämda smyger med.
   const validateBody = await Object.keys(requestBody).filter(
     (key) => !["id", "title", "text", "createdAt", "modifiedAt"].includes(key)
   );
@@ -16,10 +16,12 @@ async function bodyChecker(req, res, next) {
       }
     }
   );
+  //Om det inte finns 5 st booleans i validateValues
+  //betyder det att något av värden har fel typ.
   if (!validateBodyValues.length == 5) {
     return res
       .status(400)
-      .json({ message: "The body contained wrong type of values" });
+      .json({ message: "The body contained the wrong type of values" });
   }
 
   //Kontrollerar att title och text fältens värden har korrekt längd.

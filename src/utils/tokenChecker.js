@@ -9,7 +9,7 @@ async function tokenChecker(req, res, next) {
       token.replace(`Bearer `, ``),
       process.env.JWS_SECRET
     );
-    console.log("Token checker", resultFromToken);
+    //Läger till resultatet från verify ovan till anropet.
     req.resultFromToken = resultFromToken;
   } catch (error) {
     res.status(500).json({ message: "Expired token" });
