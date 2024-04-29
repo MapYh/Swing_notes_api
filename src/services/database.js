@@ -30,7 +30,7 @@ async function getAllNotes(id) {
   return user.notes;
 }
 //Updatera en anteckning från databasen tillhörande en viss användare.
-async function updateNotes(id, updatedInfo) {
+async function updateNote(id, updatedInfo) {
   const user = await dbUsers.findOne({ _id: id }, (err, docs) => {
     if (err) {
       console.log(err);
@@ -40,13 +40,25 @@ async function updateNotes(id, updatedInfo) {
     }
   });
 
+  //Om det finns en anteckning med samma id som i anropet, updatera anteckningen.
+
   //Letar efter en anteckning med samma id som i anropet från postman.
   for (let i = 0; i < user.notes.length; i++) {
     if (user.notes[i].id == updatedInfo.id) {
-      //Updaterar innheållet i anteckningen med det som finns i anropet från postman.
-      user.notes[i].text = updatedInfo.text;
-      user.notes[i].title = updatedInfo.title;
-      user.notes[i].modifiedAt = updatedInfo.modifiedAt;
+      //Kollar om anteckninge och anropet har samma inehåll redan.
+      if (
+        user.notes[i].text == updatedInfo.text &&
+        user.notes[i].title == updatedInfo.title
+      ) {
+        return "same content";
+      } else {
+        //Updaterar innheållet i anteckningen med det som finns i anropet från postman.
+        user.notes[i].text = updatedInfo.text;
+        user.notes[i].title = updatedInfo.title;
+        user.notes[i].modifiedAt = updatedInfo.modifiedAt;
+      }
+    } else {
+      return null;
     }
   }
   const notes = user.notes;
@@ -103,7 +115,7 @@ module.exports = {
   getUser,
   getUserWithId,
   getAllNotes,
-  updateNotes,
+  updateNote,
   deleteNote,
   search,
 };

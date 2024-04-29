@@ -8,7 +8,7 @@ const {
   getAllNotes,
   getUserWithId,
   dbUsers,
-  updateNotes,
+  updateNote,
   deleteNote,
   search,
 } = require("./src/services/database.js");
@@ -28,16 +28,15 @@ app.post("/api/users/signup", signup, async (req, res) => {});
 
 app.post("/api/users/login", login, async (req, res) => {
   console.log("token", req.token);
+  //Använd för att få en token till konsolen som du kan klistra in i postman.
   try {
     //Kollar om användaren har rätt användarnamn och lösenord.
     if (req.loggedIn) {
       res
         .status(200)
-        .json({ success: req.loggedIn, message: "You are logged in." });
+        .json({ success: req.loggedIn, message: "Du är inloggad." });
     } else {
-      res
-        .status(400)
-        .json({ success: req.loggedIn, message: "Wrong password." });
+      res.status(400).json({ success: req.loggedIn, message: "Fel lösenord." });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error." });
@@ -49,6 +48,7 @@ app.post("/api/notes", [tokenChecker, bodyChecker], async (req, res) => {
 
   //Hämtar en användare baserad på id:t i token.
   const user = await getUserWithId(req.resultFromToken.id);
+
   try {
     if (req.resultFromToken && !(user == null)) {
       //Sparar anteckningen i notes arrayen i användar dokumentet.
@@ -58,9 +58,11 @@ app.post("/api/notes", [tokenChecker, bodyChecker], async (req, res) => {
         { _id: req.resultFromToken.id },
         { $set: { notes: user.notes } }
       );
+      res.status(200).json({ success: true, message: `Anteckning sparad.` });
+    } else {
       res
-        .status(200)
-        .json({ success: true, message: `Note saved to your account.` });
+        .status(404)
+        .json({ success: false, message: `Ingen användare hittades.` });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
@@ -94,7 +96,7 @@ app.get("/api/notes/search", tokenChecker, async (req, res) => {
       } else {
         res.status(404).json({
           success: false,
-          message: `No note found with title:${title}`,
+          message: `Ingen anteckning hade titeln:${title}`,
         });
       }
     }
@@ -107,13 +109,34 @@ app.get("/api/notes/search", tokenChecker, async (req, res) => {
 
 app.put("/api/notes", tokenChecker, async (req, res) => {
   const updatedInfo = req.body;
-
+  console.log("here");
   try {
     if (req.resultFromToken) {
       //Updatera en anteckning med det som finns i anropet.
-      await updateNotes(req.resultFromToken.id, updatedInfo);
-
-      res.status(200).json({ success: true, message: "notes updated" });
+      const result = await updateNote(req.resultFromToken.id, updatedInfo);
+      //Om resultatet är null fanns det inga anteckningar att uppdatera
+      if (!(result == null)) {
+        //Om anteckningen och anropet redan hade samma innehåll görs inget.
+        if (result == "same content") {
+          res.status(200).json({
+            success: true,
+            message: "Anteckning och anropet har samma inehåll.",
+          });
+        } else {
+          res.status(200).json({
+            success: true,
+            message: "Anteckningen uppdaterad.",
+          });
+        }
+      } else {
+        res
+          .status(404)
+          .json({ success: true, message: "Hittade inte anteckningen." });
+      }
+    } else {
+      res
+        .status(400)
+        .json({ success: true, message: "Anteckningen blev inte uppdaterad" });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
@@ -128,9 +151,13 @@ app.delete("/api/notes", tokenChecker, async (req, res) => {
     if (req.resultFromToken) {
       //Radera en anteckning med id från anropet.
       await deleteNote(req.resultFromToken.id, idToDelete);
-      res.status(200).json({ success: true, message: "note deleted" });
+      res
+        .status(200)
+        .json({ success: true, message: "Anteckninge är nu raderad." });
     } else {
-      res.status(404).json({ success: false, message: "token not found" });
+      res
+        .status(404)
+        .json({ success: false, message: "Hittade ingen giltig token." });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
