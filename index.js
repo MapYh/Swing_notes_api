@@ -23,12 +23,34 @@ app.use(express.json());
 app.use("/api/docs", swaggerUI.serve);
 app.get("/api/docs", swaggerUI.setup(apiDocs));
 
+/*
+All info skickas i "body" från postman i formatet,
+{
+    "id": "3577e7b1-a293-46da-a345-8ef2974aa423",
+    "title": "To do",
+    "text": "Thing to do",
+    "createdAt":"{{currentdate}} / {{currenttime}}",
+    "modifiedAt": "{{currentdate}} / {{currenttime}}"
+}
+Pre-request-script till createdAt och modifiedAt om det behövs.
+const dateNow = new Date();
+postman.setGlobalVariable("currentdate", dateNow.toLocaleDateString());
+const timeNow = new Date();
+postman.setGlobalVariable("currenttime", timeNow.toLocaleTimeString());
+var uuid = require('uuid');
+postman.setEnvironmentVariable('guid', uuid.v4());
+
+Token kan hittas i konsolen efter att man skapat en användare och loggat in.
+Token koden finns i rad 51.
+*/
+
 /*-----------POST---------------*/
 app.post("/api/users/signup", signup, async (req, res) => {});
 
 app.post("/api/users/login", login, async (req, res) => {
-  console.log("token", req.token);
   //Använd för att få en token till konsolen som du kan klistra in i postman.
+  console.log("token", req.token);
+
   try {
     //Kollar om användaren har rätt användarnamn och lösenord.
     if (req.loggedIn) {
@@ -106,10 +128,9 @@ app.get("/api/notes/search", tokenChecker, async (req, res) => {
 });
 
 /*-----------PUT---------------*/
-
+//req.resultFromToken ger användaren det gäller, och updatedInfo ger id och innehållet till anteckningen.
 app.put("/api/notes", tokenChecker, async (req, res) => {
   const updatedInfo = req.body;
-  console.log("here");
   try {
     if (req.resultFromToken) {
       //Updatera en anteckning med det som finns i anropet.
@@ -120,7 +141,7 @@ app.put("/api/notes", tokenChecker, async (req, res) => {
         if (result == "same content") {
           res.status(200).json({
             success: true,
-            message: "Anteckning och anropet har samma inehåll.",
+            message: "Anteckning och anropet har samma innehåll.",
           });
         } else {
           res.status(200).json({
