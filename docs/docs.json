@@ -1,6 +1,6 @@
 {
   "info": {
-    "description": "Documentation for swing notes Api.",
+    "description": "Dokumentation till swing notes Api.",
     "title": "Swing API",
     "version": "1.0.0"
   },
@@ -217,7 +217,7 @@
             "description": "Returnerar ett error meddelande."
           }
         },
-        "summary": "Sparar en anteckning."
+        "summary": "Sparar en anteckning via ett anrop."
       },
       "put": {
         "description": null,
@@ -307,7 +307,7 @@
             "description": "Returnerar ett error meddelande."
           }
         },
-        "summary": "Updaterar en anteckning."
+        "summary": "Updaterar en anteckning via antecknings id."
       },
       "delete": {
         "description": null,
@@ -397,7 +397,7 @@
             "description": "Returnerar ett error meddelande."
           }
         },
-        "summary": "Raderar en anteckning."
+        "summary": "Raderar en anteckning via antecknings id."
       }
     },
     "/api/notes/search": {
@@ -423,7 +423,7 @@
                 }
               }
             },
-            "description": "Returnerar en anteckning"
+            "description": "Returnerar en anteckning via titel."
           },
           "400": {
             "content": {
@@ -489,7 +489,7 @@
             "description": "Returnerar ett error meddelande."
           }
         },
-        "summary": "Returnerar en sökt anteckning."
+        "summary": "Returnerar en sökt anteckning via titel."
       }
     },
     "/api/users/login": {
@@ -515,7 +515,7 @@
                 }
               }
             },
-            "description": "Inloggning"
+            "description": "Returnerar ett meddelande om det gick att logga in."
           },
           "400": {
             "content": {
