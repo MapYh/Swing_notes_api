@@ -35,8 +35,7 @@ let found = [];
 //Updatera en anteckning från databasen tillhörande en viss användare.
 async function updateNote(idtoken, updatedInfo) {
   const user = await dbUsers.findOne({ _id: idtoken });
-  console.log("user id", user.notes[0].id);
-  console.log("body id", updatedInfo.id);
+
   let flag = [];
   //Letar efter en anteckning med samma id som i anropet.
   for (let i = 0; i < user.notes.length; i++) {
@@ -83,11 +82,12 @@ async function deleteNote(id, idToDelete) {
     if (user.notes[i].id == idToDelete.id) {
       //Raderar den sökta anteckningen.
       user.notes.splice(i, 1);
+      const notes = user.notes;
+      //Updaterar den sökta användarens dokument.
+      await dbUsers.update({ _id: id }, { $set: { notes } });
+      return true;
     }
   }
-  const notes = user.notes;
-  //Updaterar den sökta användarens dokument.
-  await dbUsers.update({ _id: id }, { $set: { notes } });
 }
 //Letar upp en anteckning baserad på titeln.
 async function search(id, title) {

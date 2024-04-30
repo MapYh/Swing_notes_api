@@ -137,7 +137,6 @@ app.put("/api/notes", tokenChecker, async (req, res) => {
   try {
     if (req.resultFromToken) {
       const result = await updateNote(req.resultFromToken.id, updatedInfo);
-      console.log("result", result);
       if (result == false) {
         res.status(404).json({
           success: false,
@@ -146,7 +145,7 @@ app.put("/api/notes", tokenChecker, async (req, res) => {
       } else if (result == "same content") {
         res.status(404).json({
           success: true,
-          message: "Anteckningen och anropet innehåller samma.",
+          message: "Anteckningen och anropet innehåller redan samma innehåll.",
         });
       } else if (result) {
         res.status(200).json({
@@ -167,10 +166,17 @@ app.delete("/api/notes", tokenChecker, async (req, res) => {
   try {
     if (req.resultFromToken) {
       //Radera en anteckning med id från anropet.
-      await deleteNote(req.resultFromToken.id, idToDelete);
-      res
-        .status(200)
-        .json({ success: true, message: "Anteckninge är nu raderad." });
+      const result = await deleteNote(req.resultFromToken.id, idToDelete);
+      if (result) {
+        res
+          .status(200)
+          .json({ success: true, message: "Anteckninge är nu raderad." });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Anteckninge raderades inte fel id.",
+        });
+      }
     } else {
       res
         .status(404)
