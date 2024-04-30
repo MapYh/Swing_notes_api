@@ -133,33 +133,27 @@ app.get("/api/notes/search", tokenChecker, async (req, res) => {
 //req.resultFromToken ger användaren det gäller, och updatedInfo ger id och innehållet till anteckningen.
 app.put("/api/notes", tokenChecker, async (req, res) => {
   const updatedInfo = req.body;
+
   try {
     if (req.resultFromToken) {
-      //Updatera en anteckning med det som finns i anropet.
       const result = await updateNote(req.resultFromToken.id, updatedInfo);
-      //Om resultatet är null fanns det inga anteckningar att uppdatera
-      if (!(result == null)) {
-        //Om anteckningen och anropet redan hade samma innehåll görs inget.
-        if (result == "same content") {
-          res.status(200).json({
-            success: true,
-            message: "Anteckning och anropet har samma innehåll.",
-          });
-        } else {
-          res.status(200).json({
-            success: true,
-            message: "Anteckningen uppdaterad.",
-          });
-        }
-      } else {
-        res
-          .status(404)
-          .json({ success: true, message: "Hittade inte anteckningen." });
+      console.log("result", result);
+      if (result == false) {
+        res.status(404).json({
+          success: false,
+          message: "Ingen anteckning kunde hittas med det id.",
+        });
+      } else if (result == "same content") {
+        res.status(404).json({
+          success: true,
+          message: "Anteckningen och anropet innehåller samma.",
+        });
+      } else if (result) {
+        res.status(200).json({
+          success: true,
+          message: "Anteckningen uppdaterades.",
+        });
       }
-    } else {
-      res
-        .status(400)
-        .json({ success: true, message: "Anteckningen blev inte uppdaterad" });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });

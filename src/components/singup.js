@@ -15,14 +15,17 @@ async function signup(req, res, next) {
   }
   //Kolla om det finns en användare redan finns med det sökta användarnamnet.
   const user = await getUser(username);
+
   try {
     //Om det inte finns en användare med det sökta användar namnet,
     //Skapas en användare.
-    if (!user) {
+    if (user == null) {
       //hashar lösenordet.
       const encyptedPassword = await hashedPassword(password);
+
       //Spara användaren med användarnamn, hashat lösenord och alla notes.
       const result = await storedUser(username, encyptedPassword, notes);
+
       //Om result innehåller något har en användare sparats.
       if (result) {
         res.status(200).json({ success: true, message: "Användare sparad." });
