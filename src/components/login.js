@@ -7,12 +7,14 @@ async function login(req, res, next) {
   //Hämtar en användare med det relevanta användarnament.
   const user = await getUser(username);
   let userPassword;
+  //Kontollerar så att användaren finns.
   if (user == null) {
     res
       .status(404)
       .json({ success: false, message: "Användaren hittades inte." });
     return;
   } else {
+    //Om användaren finns spara lösenordet i en egen variabel.
     userPassword = user.password;
   }
 
