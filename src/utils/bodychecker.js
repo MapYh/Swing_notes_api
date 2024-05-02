@@ -17,7 +17,7 @@ async function bodyChecker(req, res, next) {
     }
   );
   //Om det inte finns 5 st booleans i validateValues
-  //betyder det att något av värden har fel typ.
+  //betyder det att något av värdena i anropet har fel typ.
   if (!validateBodyValues.length == 5) {
     return res
       .status(400)
